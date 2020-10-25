@@ -1,0 +1,19 @@
+{
+  "name": "event-booking-app",
+  "version": "1.0.0",
+  "description": "React/Node/MongoDB/GraphQL",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Riyana6/Event-Bookimg-app.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Riyana6/Event-Bookimg-app/issues"
+  },
+  "homepage": "https://github.com/Riyana6/Event-Bookimg-app#readme"
+}
