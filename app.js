@@ -9,16 +9,16 @@ app.use(bodyParser.json());
 app.use('/graphql', graphqlHttp ({
     schema: buildSchema(`
         type RootQuery {
-
+            events: [String!]!
         }
 
         type RootMutation {
-
+            createEvent(name: String): String
         }
-        
+
         schema {
-            query:
-            mutation:
+            query: RootQuery
+            mutation: RootMutation
         }
     `),
     rootValue: {
