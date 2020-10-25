@@ -6,6 +6,7 @@
   "author": "JMJ Riyana <jeemariyana@gmail.com>",
   "license": "MIT",
   "dependencies": {
-    "body-parser": "^1.19.0"
+    "body-parser": "^1.19.0",
+    "nodemon": "^2.0.6"
   }
 }
