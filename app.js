@@ -62,4 +62,12 @@ app.use(
     })
 );
 
-app.listen(3000);
+mongoose.connect(
+    `mongodb+srv://${process.env.MONGO_USER}:${
+        process.env.MONGO_PASSWORD
+    }@cluster0.m3l4e.mongodb.net/<dbname>?retryWrites=true&w=majority`
+).then(() => {
+    app.listen(3000);
+}).catch(err => {
+    console.log(err);
+});
