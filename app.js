@@ -5,6 +5,7 @@ const {buildSchema} = require('graphql');
 const mongoose = require('mongoose');
 
 const Event = require('./models/event');
+const event = require('./models/event');
 
 const app = express();
 
@@ -46,7 +47,13 @@ app.use(
         `),
         rootValue: {
             events: () => {
-                Event.find().then().catch(err => {
+                return Event.find()
+                    .then(events => {
+                        return events.map(event => {
+                            return {...event._doc};
+                        });
+                    })
+                    .catch(err => {
                     throw err;
                 });
             },
