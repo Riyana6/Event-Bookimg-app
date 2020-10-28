@@ -46,7 +46,9 @@ app.use(
         `),
         rootValue: {
             events: () => {
-                return events;
+                Event.find().then().catch(err => {
+                    throw err;
+                });
             },
             createEvent: (args) => {
                 const event = new Event({
