@@ -65,6 +65,7 @@ app.use(
                     date: new Date(args.eventInput.date)
                 });
                 return event
+                
                     .save()
                     .then(result => {
                         console.log(result);
