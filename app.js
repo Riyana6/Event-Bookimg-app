@@ -12,6 +12,16 @@ const app = express();
 
 app.use(bodyParser.json());
 
+const user = userId => {
+    return User.findById(userId)
+    .then(user => {
+        return { ...user._doc, _id: user.id};
+    })
+    .catch(err => {
+        throw err;
+    });
+}
+
 app.use(
     '/graphql', 
     graphqlHTTP({
@@ -22,12 +32,14 @@ app.use(
                 description: String!
                 price: Float!
                 date: String!
+                creator: User!
             }
 
             type User {
                 _id: ID!
                 email: String!
                 password: String!
+                createdEvents: [Event!]!
             }
 
             input EventInput {
@@ -58,10 +70,14 @@ app.use(
         `),
         rootValue: {
             events: () => {
-                return Event.find()
+                return Event.find().populate('creator')
                     .then(events => {
                         return events.map(event => {
-                            return {...event._doc, _id: event._doc._id.toString()};
+                            return {
+                                ...event._doc, 
+                                _id: event._doc._id.toString(),
+                                creator: user
+                            };
                         });
                     })
                     .catch(err => {
@@ -73,13 +89,25 @@ app.use(
                     title: args.eventInput.title,
                     description: args.eventInput.description,
                     price: +args.eventInput.price,
-                    date: new Date(args.eventInput.date)
+                    date: new Date(args.eventInput.date),
+                    creator: ''
                 });
+                let createdEvent;
                 return event
                 .save()
                 .then(result => {
-                    console.log(result);
-                    return {...result._doc };
+                    createdEvent = {...result._doc , _id: result._doc._idtoString()};
+                    return User.findById('')
+                })
+                .then(user => {
+                    if(!user) {
+                        throw new Error('User doesnt exist.');
+                    }
+                    user.createdEvents.push(event);
+                    return user.save();
+                })
+                .then(result => {
+                    return createdEvent; 
                 })
                 .catch(err => {
                     console.log(err);
@@ -109,7 +137,7 @@ app.use(
                 });     
             }
         },
-        graphiql: true
+        graphiql: true       
     })
 );
 
