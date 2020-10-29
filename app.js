@@ -117,7 +117,11 @@ app.use(
                 return event
                 .save()
                 .then(result => {
-                    createdEvent = {...result._doc , _id: result._doc._idtoString()};
+                    createdEvent = {
+                        ...result._doc, 
+                        _id: result._doc._idtoString(), 
+                        creator: user.bind(this, result._doc.creator)
+                    };
                     return User.findById('')
                 })
                 .then(user => {
