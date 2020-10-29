@@ -7,15 +7,36 @@ const bcrypt = require('bcryptjs');
 
 const Event = require('./models/event');
 const User = require('./models/user');
+const event = require('./models/event');
 
 const app = express();
 
 app.use(bodyParser.json());
 
+const events = eventIds => {
+    return Event.find({_id: {$in:});
+        .then(events => {
+            return events.map(event => {
+                return { 
+                    ...event._doc, 
+                    _id:event.id, 
+                    creator:user.bind(this, event.creator)
+                }
+            })
+        })
+        .catch(err => {
+            throw err;
+        });
+};
+
 const user = userId => {
     return User.findById(userId)
     .then(user => {
-        return { ...user._doc, _id: user.id};
+        return { 
+            ...user._doc, 
+            _id: user.id, 
+            createdEvents: events.bind(this, user._doc.createdEvents)
+        };
     })
     .catch(err => {
         throw err;
@@ -76,7 +97,7 @@ app.use(
                             return {
                                 ...event._doc, 
                                 _id: event._doc._id.toString(),
-                                creator: user
+                                creator: user.bind(this, event._doc.creator)
                             };
                         });
                     })
