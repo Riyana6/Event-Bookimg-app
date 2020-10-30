@@ -3,10 +3,10 @@ const bcrypt = require('bcryptjs');
 const Event = require('../../models/event');
 const User = require('../../models/user');
 
-const events =async eventIds => {
-    return Event.find({_id: {$in: eventIds } })
-    .then(events => {
-        return events.map(event => {
+const events = async eventIds => {
+    try {
+    const events = await Event.find({_id: {$in: eventIds } })
+    events.map(event => {
             return { 
                 ...event._doc, 
                 _id:event.id, 
@@ -14,10 +14,9 @@ const events =async eventIds => {
                 creator:user.bind(this, event.creator)
             };
         });
-    })
-    .catch(err => {
+    } catch (err) {
         throw err;
-    });
+    };
 };
 
 const user = userId => {
