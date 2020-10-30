@@ -58,6 +58,7 @@ module.exports = {
             creator: '5c0f6dcde049d205fa2471dc'
         });
         let createdEvent;
+        try {
         const result = await event
         .save()
             createdEvent = {
@@ -67,40 +68,36 @@ module.exports = {
                 creator: user.bind(this, result._doc.creator)
             };
             const user = await User.findById('5c0f6dcde049d205fa2471dc');
+            
             if(!user) {
-                throw new Error('User doesnt exist.');
+                throw new Error('User not found.');
             }
             user.createdEvents.push(event);
-            const userSaveResult = await user.save();
-        })
-        .then(result => {
+            await user.save();
+
             return createdEvent; 
-        })
-        .catch(err => {
+        } catch(err) {
             console.log(err);
             throw err;
-        });
+        }
     },
-    createUser: args => {
-        return User.findOne({ email: args.userInput.email })
-        .then(user => {
-            if (user) {
+    createUser: async args => {
+        try{
+        const existingUser = await User.findOne({ email: args.userInput.email })
+             if (existingUser) {
                 throw new Error('User exists already.');
             }
-            return bcrypt.hash(args.userInput.password, 12);
-        })                
-        .then(hashedPassword => {
+        const hashedPassword = await bcrypt.hash(args.userInput.password, 12);
             const user = new User ({
-                email: args.userInput.email,
-                password: hashedPassword
-            });
-            return user.save();
-        })
-        .then(result => {
+            email: args.userInput.email,
+            password: hashedPassword
+            })
+
+            const result = await user.save();
+
             return {...result._doc,password: null, _id: result.id};
-        })
-        .catch(err => {
+        } catch(err) {
             throw err;
-        });     
+        }     
     }
 }
