@@ -3,7 +3,7 @@ const bcrypt = require('bcryptjs');
 const Event = require('../../models/event');
 const User = require('../../models/user');
 
-const events = eventIds => {
+const events =async eventIds => {
     return Event.find({_id: {$in: eventIds } })
     .then(events => {
         return events.map(event => {
@@ -69,7 +69,7 @@ module.exports = {
                 date: new Date(event._doc.date).toISOString(),
                 creator: user.bind(this, result._doc.creator)
             };
-            return User.findById('')
+            return User.findById('5c0f6dcde049d205fa2471dc');
         })
         .then(user => {
             if(!user) {
