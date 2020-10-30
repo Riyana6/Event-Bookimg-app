@@ -55,26 +55,23 @@ module.exports = {
             description: args.eventInput.description,
             price: +args.eventInput.price,
             date: new Date(args.eventInput.date),
-            creator: ''
+            creator: '5c0f6dcde049d205fa2471dc'
         });
         let createdEvent;
-        await event
+        const result = await event
         .save()
-        .then(result => {
             createdEvent = {
                 ...result._doc, 
                 _id: result._doc._id.toString(), 
                 date: new Date(event._doc.date).toISOString(),
                 creator: user.bind(this, result._doc.creator)
             };
-            return User.findById('5c0f6dcde049d205fa2471dc');
-        })
-        .then(user => {
+            const user = await User.findById('5c0f6dcde049d205fa2471dc');
             if(!user) {
                 throw new Error('User doesnt exist.');
             }
             user.createdEvents.push(event);
-            return user.save();
+            const userSaveResult = await user.save();
         })
         .then(result => {
             return createdEvent; 
