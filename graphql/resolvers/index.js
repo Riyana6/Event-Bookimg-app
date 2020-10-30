@@ -41,7 +41,7 @@ module.exports = {
                 return events.map(event => {
                     return {
                         ...event._doc, 
-                        _id: event.]_id,
+                        _id: event._id,
                         date: new Date(event._doc.date).toISOString(),
                         creator: user.bind(this, event._doc.creator)
                     };
@@ -65,7 +65,8 @@ module.exports = {
         .then(result => {
             createdEvent = {
                 ...result._doc, 
-                _id: result._doc._idtoString(), 
+                _id: result._doc._id.toString(), 
+                date: new Date(event._doc.date).toISOString(),
                 creator: user.bind(this, result._doc.creator)
             };
             return User.findById('')
