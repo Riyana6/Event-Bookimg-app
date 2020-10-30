@@ -14,43 +14,42 @@ const events = async eventIds => {
                 creator:user.bind(this, event.creator)
             };
         });
+        return events;
     } catch (err) {
         throw err;
     };
 };
 
-const user = userId => {
-    return User.findById(userId)
-    .then(user => {
+const user = async userId => {
+    try {
+    const user = await User.findById(userId)
         return { 
             ...user._doc, 
             _id: user.id, 
             createdEvents: events.bind(this, user._doc.createdEvents)
         };
-    })
-    .catch(err => {
+    } catch(err) {
         throw err;
-    });
+    };
 };
 
 module.exports = {
-    events: () => {
-        return Event.find()
-            .then(events => {
-                return events.map(event => {
-                    return {
-                        ...event._doc, 
-                        _id: event._id,
-                        date: new Date(event._doc.date).toISOString(),
-                        creator: user.bind(this, event._doc.creator)
-                    };
-                });
+    events: async () => {
+        try {
+            const events = await Event.find()
+            return events.map(event => {
+                return {
+                    ...event._doc, 
+                    _id: event._id,
+                    date: new Date(event._doc.date).toISOString(),
+                    creator: user.bind(this, event._doc.creator)
+                };
             })
-            .catch(err => {
+        } catch(err) {
             throw err;
-        });
+        }
     },
-    createEvent: (args) => {
+    createEvent: async args => {
         const event = new Event({
             title: args.eventInput.title,
             description: args.eventInput.description,
@@ -59,7 +58,7 @@ module.exports = {
             creator: ''
         });
         let createdEvent;
-        return event
+        await event
         .save()
         .then(result => {
             createdEvent = {
